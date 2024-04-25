@@ -1,0 +1,55 @@
+/* General chart styles */
+.chart {
+    -fx-padding: 10px;
+    -fx-background-color: white;
+}
+
+.chart-content {
+    -fx-padding: 10px;
+}
+
+.chart-title {
+    -fx-text-fill: #333;
+    -fx-font-size: 20px;
+}
+
+/* Styles for the chart plot area */
+.chart-plot-background {
+    -fx-background-color: white;
+}
+
+/* Series line styles */
+.default-color0.chart-series-line { -fx-stroke: #e9967a; }
+.default-color1.chart-series-line { -fx-stroke: #8fbc8f; }
+.default-color2.chart-series-line { -fx-stroke: #87cefa; }
+/* Add more colors as needed for each series */
+
+/* Styles for the symbols on each data point - set to invisible */
+.chart-line-symbol {
+    -fx-background-color: transparent, transparent;
+    -fx-padding: 0px;
+}
+
+/* Axis styles */
+.axis-label {
+    -fx-text-fill: #666;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.axis-tick-label {
+    -fx-text-fill: #666;
+}
+
+/* Grid line styles */
+.chart-horizontal-grid-lines, .chart-vertical-grid-lines {
+    -fx-stroke: #ccc;
+    -fx-stroke-dash-array: 5 5;
+}
+
+/* Legend styles */
+.chart-legend {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 10px;
+}

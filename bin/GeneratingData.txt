@@ -1,0 +1,12 @@
+Time taken to generate data: 2788 milliseconds
+Time taken to generate data: 10425 milliseconds
+Time taken to generate data: 10838 milliseconds
+Time taken to generate data: 10773 milliseconds
+Time taken to generate data: 9660 milliseconds
+Time taken to generate data: 12273 milliseconds
+Time taken to generate data: 12008 milliseconds
+Time taken to generate data: 14488 milliseconds
+Time taken to generate data: 2503 milliseconds
+Time taken to generate data: 2477 milliseconds
+Time taken to generate data: 3559 milliseconds
+Time taken to generate data: 3624 milliseconds
