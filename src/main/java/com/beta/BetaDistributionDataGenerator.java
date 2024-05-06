@@ -2,10 +2,14 @@ package com.beta;
 
 import org.apache.commons.math3.distribution.BetaDistribution;
 
+import java.util.Arrays;
+import java.util.Random;
+
 public class BetaDistributionDataGenerator {
     private int rows;
     private int columns;
     private Comparable[][][] matrix;
+
 
     public BetaDistributionDataGenerator(int rows, int columns) {
         this.rows = rows;
@@ -16,11 +20,11 @@ public class BetaDistributionDataGenerator {
 
 
     // Method to initialize the arrays in each cell of the matrix
-    public void initializeArrays(boolean alpha_ , boolean beta_ , boolean nk_) {
+    public void initializeArrays(int case_) {
         for (int mi = 0; mi < rows; mi++) {
-            double alpha = determineAlpha(alpha_ , mi);
-            int nk = determineSize(nk_ , mi);
-            double beta = determineBeta(beta_ , mi);
+            double alpha = determineAlpha(mi, case_);
+            int nk = determineSize(mi, case_);
+            double beta = determineBeta(mi, case_);
             for (int vj = 0; vj < columns; vj++) {
 
                 matrix[mi][vj] = new Comparable[nk];
@@ -34,26 +38,69 @@ public class BetaDistributionDataGenerator {
         }
     }
 
-    public double determineAlpha(boolean alpha_ , int row) {
-        if (alpha_) {
-            return 1 ;
+    // New method to get a copy of the matrix without modifying the original
+    public Comparable[][][] getMatrixCopy() {
+        int rows = matrix.length;
+        Comparable[][][] copy = new Comparable[rows][][];
+        for (int i = 0; i < rows; i++) {
+            int columns = matrix[i].length;
+            copy[i] = new Comparable[columns][];
+            for (int j = 0; j < columns; j++) {
+                copy[i][j] = Arrays.copyOf(matrix[i][j], matrix[i][j].length);
+            }
         }
-        return 0.2 * (row + 1);
+        return copy;
     }
 
-    public double determineBeta(boolean beta_ , int row ) {
-        if(beta_){
-            return 1;
-        }
-        return 0.2 * (row + 1);
+    // Determines Alpha based on the row index to ensure varied distribution characteristics
+    // Determine the value of Alpha based on the specified row
+    public static double determineAlpha(int row , int case_) {
+
+        return switch (case_) {
+            case 0 -> {
+                // Opposite phase: Generate a random value in the range [0.5, 5.0)
+                double[] list = {0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
+                yield list[ (row)%10 ];
+            }
+            case 1 -> {
+                // Synchronous variations: Generate another random value in the range [0.5, 5.0)
+                double[] list = {0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
+                yield list[ (row)%10 ];
+            }
+            default -> 1; // Default case (not expected to be used)
+        };
     }
 
-    public int determineSize(boolean nk_ , int row) {
-        int baseSize = 100000;
-        if (nk_) {
-            return baseSize;
+    // Determine the value of Beta based on the specified row
+    public static double determineBeta(int row, int case_) {
+        return switch (case_) {
+            case 0 -> {
+                // Opposite phase: Generate a contrasting random value in the range [0.5, 5.0)
+                double[] list = {0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
+                yield 5.0 - list[ (row)%10 ];
+
+            }
+            case 1 -> {
+                // Synchronous variations: Generate another random value in the range [0.5, 5.0)
+                double[] list = {0.5,1,1.5,2,2.5,3,3.5,4,4.5,5};
+                yield list[ (row)%10 ];
+            }
+
+            default -> 1; // Default case
+        };
+    }
+
+    public int determineSize(int row, int case_) {
+        int baseSize = 10000;
+
+        switch (case_) {
+            case 2->{
+                return baseSize * (row +1);
+            }
+            default -> {
+                return baseSize;
+            }
         }
-        return baseSize * (row + 1);
     }
 
     public void setElement(int row, int column, int index, int value) {

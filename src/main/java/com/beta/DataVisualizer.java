@@ -102,32 +102,37 @@ public class DataVisualizer extends Application {
         CategoryAxis xAxis = new CategoryAxis();
         NumberAxis yAxis = new NumberAxis();
         BarChart<String, Number> chart = new BarChart<>(xAxis, yAxis);
-        chart.setTitle("Average Execution Time by Parameters");
-        xAxis.setLabel("Parameters");
+        chart.setTitle("Average Execution Time by Parameters (Grouped by Row)");
+        xAxis.setLabel("Row (Alpha, Beta)");
         yAxis.setLabel("Average Execution Time");
 
-        // Convert the parameters to a string that can be sorted numerically
-        Map<String, List<TestResult>> resultsByParams = results.stream()
-                .collect(Collectors.groupingBy(result -> String.format("%04.2f_%04.2f", result.parameter1, result.parameter2)));
+        // Group by row (cellX) and collect results
+        Map<Integer, List<TestResult>> resultsByRow = results.stream()
+                .collect(Collectors.groupingBy(TestResult::getCellX));
 
-        // Sort the parameter keys
-        List<String> sortedKeys = new ArrayList<>(resultsByParams.keySet());
-        sortedKeys.sort(Comparator.naturalOrder());
-
-        // Create and add series in sorted order of parameters
-        sortedKeys.forEach(params -> {
-            XYChart.Series<String, Number> series = new XYChart.Series<>();
-            series.setName("Beta " + params.replace('_', ','));
-            double avgExecutionTime = resultsByParams.get(params).stream()
+        // Create and add series for each row
+        resultsByRow.forEach((row, rowResults) -> {
+            // Calculate the average execution time for this row
+            double avgExecutionTime = rowResults.stream()
                     .mapToInt(TestResult::getExecutionTime)
                     .average()
                     .orElse(0);
-            series.getData().add(new XYChart.Data<>(params.replace('_', ','), avgExecutionTime));
+
+            // Assume the first result in the group provides a representative value for alpha and beta
+            TestResult firstResult = rowResults.get(0);
+            String rowLabel = String.format("Row %d (Alpha %.2f, Beta %.2f)", row, firstResult.getParameter1(), firstResult.getParameter2());
+            String rows = String.format("Row %d", row);
+
+            // Create and add the data point
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName(rowLabel);
+            series.getData().add(new XYChart.Data<>(rows, avgExecutionTime));
             chart.getData().add(series);
         });
 
         return chart;
     }
+
 
 
     private BarChart<String, Number> createCellChart(List<TestResult> results) {

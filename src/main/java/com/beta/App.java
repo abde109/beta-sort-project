@@ -8,27 +8,31 @@ public class App {
 
 
         System.out.println("Generating Beta Distribution Data...");
-        int rows = 10; // Number of alpha values
-        int columns = 10; // Number of beta values
-        boolean alpha_ = false ;
-        boolean beta_= false;
-        boolean nk_ = false; //is it fix
+        int rows = 9;
+        int columns = 9;
+        int case_ = 2;
+
 
         clearFile("GeneratingData.txt");
         clearFile("AnalysisResults.txt");
 
-        ExecutionTimer timer = new App.ExecutionTimer();
-        timer.start();
-
         BetaDistributionDataGenerator distribution = new BetaDistributionDataGenerator(rows, columns);
-        distribution.initializeArrays(alpha_,beta_,nk_);
-
-        timer.stop();
+        distribution.initializeArrays(case_);
 
         // TXTStorage.storeResults("GeneratingData.txt", "Time taken to generate data: " + timer.getElapsedTime() + " milliseconds");
+        System.out.println("\nSorting Each Row of Beta Distribution werm up...");
+
+
+        // Initial Sorting Rounds for JVM Warm-Up
+        for (int warmUpRound = 0; warmUpRound < 20; warmUpRound++) {
+            for (int row = 0; row < distribution.getMatrix().length; row++) {
+                for (int column = 0; column < distribution.getMatrix()[row].length; column++) {
+                    ShellSort.sort(distribution.getMatrixCopy()[row][column]);
+                }
+            }
+        }
 
         System.out.println("\nSorting Each Row of Beta Distribution Data...");
-
         for (int row = 0; row < distribution.getMatrix().length; row++) {
             StringBuilder analysisContent = new StringBuilder();
             for (int column = 0; column < distribution.getMatrix()[row].length; column++) {
@@ -40,7 +44,7 @@ public class App {
 
                 analysisContent.append("cell[").append(row).append(",").append(column).append("]");
 
-                analysisContent.append("parameter[").append(distribution.determineAlpha(alpha_, row)).append(",").append(distribution.determineBeta(beta_, row)).append("] - ").append("size[").append(distribution.determineSize(nk_, row)).append("] - ").append("Execution time [").append(timeExecution.getElapsedTime()).append("]").append("\n");
+                analysisContent.append("parameter[").append(distribution.determineAlpha(row,case_)).append(",").append(distribution.determineBeta(row,case_)).append("] - ").append("size[").append(distribution.determineSize(row, case_)).append("] - ").append("Execution time [").append(timeExecution.getElapsedTime()).append("]").append("\n");
 
 
             }
